@@ -7,6 +7,9 @@ sites
 *.vcxproj.user
 *.sln
 bin/
+# Prerequisites
+*.d
+
 # Compiled Object files
 *.slo
 *.lo
