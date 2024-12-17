@@ -190,6 +190,9 @@ int main() {
 	vec.push_back(t1);
 	vec.push_back(t2);
 	vec.push_back(t3);
+	for (int i = 0; i < vec.size(); i++) {
+		std::cout << vec[i] << std::endl;
+	}
 	std::cout << "-----------迭代器-----------" << std::endl;
 	Vector<Test>::Iterator a = vec.begin();
 	for (auto p = vec.begin(); p != vec.end(); ++p) {
