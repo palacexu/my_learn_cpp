@@ -6,23 +6,23 @@ template<typename T>
 class Allocator 
 {
 public:
-	T* allocate(int size) { //ÎªÈİÆ÷¿ª±ÙÄÚ´æ¿Õ¼ä
+	T* allocate(int size) { //ä¸ºå®¹å™¨å¼€è¾Ÿå†…å­˜ç©ºé—´
 		return (T*)malloc(sizeof(T) * size);
 	}
-	void deallocate(T* ptr) { //ÊÍ·ÅÈİÆ÷ËùÔÚÄÚ´æ¿Õ¼ä
+	void deallocate(T* ptr) { //é‡Šæ”¾å®¹å™¨æ‰€åœ¨å†…å­˜ç©ºé—´
 		free(ptr);
 	}
-	void construct(T* adr, const T& val) { //Ö´ĞĞÀàÀàĞÍµÄ¿½±´¹¹Ôì  ¹¹ÔìÒ»¸öÔªËØ
+	void construct(T* adr, const T& val) { //æ‰§è¡Œç±»ç±»å‹çš„æ‹·è´æ„é€   æ„é€ ä¸€ä¸ªå…ƒç´ 
 		new (adr) T(val);
 	}
-	void destroy(T* p) { //¸ºÔğ¶ÔÏóÎö¹¹
+	void destroy(T* p) { //è´Ÿè´£å¯¹è±¡ææ„
 		p->~T();
 	}
 };
 
 
 
-//vector class template   Ä£°æÀàĞÍ²ÎÊı   Ä£°æ·ÇÀàĞÍ²ÎÊı
+//vector class template   æ¨¡ç‰ˆç±»å‹å‚æ•°   æ¨¡ç‰ˆéç±»å‹å‚æ•°
 template <typename T, typename ALLOC = Allocator<T>>
 class Vector
 {
@@ -34,64 +34,64 @@ public:
 		_end = _first + size;
 	}
 	~Vector() {
-		//Îö¹¹Ã¿Ò»¸öÔªËØ
+		//ææ„æ¯ä¸€ä¸ªå…ƒç´ 
 		for (T* p = _first; p != _last; ++p) {
 			alloc.destroy(p);
 		}
-		//ÊÍ·ÅÄÚ´æ
+		//é‡Šæ”¾å†…å­˜
 		alloc.deallocate(_first);
 		_first = _last = _end = nullptr;
 	}
-	//¿½±´¹¹Ôìº¯Êı
+	//æ‹·è´æ„é€ å‡½æ•°
 	Vector(const Vector<T>& src) {
-		_first = alloc.allocate(src._end-src._first); //¿ª±ÙÄÚ´æ
-		int len = src._last - src._first;  //ÔªËØ¸öÊı
-		for (int i = 0; i < len; i++) { //¹¹ÔìÏàÍ¬µÄÔªËØ
+		_first = alloc.allocate(src._end-src._first); //å¼€è¾Ÿå†…å­˜
+		int len = src._last - src._first;  //å…ƒç´ ä¸ªæ•°
+		for (int i = 0; i < len; i++) { //æ„é€ ç›¸åŒçš„å…ƒç´ 
 			alloc.construct(_first + i, src._first[i]);
 		}
 		_last = _first + len;
 		_end = _first + (src._end - src._first);
 	}
-	//¸³ÖµÖØÔØº¯Êı
+	//èµ‹å€¼é‡è½½å‡½æ•°
 	Vector<T>& operator= (const Vector<T>& src){
-		if (this == &src) { //¿ÉÒÔÈ¡µØÖ·Âğ£¿
+		if (this == &src) { //å¯ä»¥å–åœ°å€å—ï¼Ÿ
 			return *this;
 		}
-		// Ïú»ÙÈİÆ÷ÄÚµÄÔªËØ¶ÔÏó
+		// é”€æ¯å®¹å™¨å†…çš„å…ƒç´ å¯¹è±¡
 		for (T* p = _last; p != _first; --p) {
 			alloc.destroy(p);
 		}
-		// ÊÍ·ÅÈİÆ÷ÄÚ´æ¿Õ¼ä
+		// é‡Šæ”¾å®¹å™¨å†…å­˜ç©ºé—´
 		alloc.deallocate(_first);
-		// ÎªÈİÆ÷¿ª±ÙĞÂÄÚ´æ
-		_first = alloc.allocate(src._end - src._first); //¿ª±ÙÄÚ´æ
-		int len = src._last - src._first;  //ÔªËØ¸öÊı
-		for (int i = 0; i < len; i++) { //ÎªÈİÆ÷¹¹ÔìsrcÈİÆ÷ÏàÍ¬µÄÔªËØ
+		// ä¸ºå®¹å™¨å¼€è¾Ÿæ–°å†…å­˜
+		_first = alloc.allocate(src._end - src._first); //å¼€è¾Ÿå†…å­˜
+		int len = src._last - src._first;  //å…ƒç´ ä¸ªæ•°
+		for (int i = 0; i < len; i++) { //ä¸ºå®¹å™¨æ„é€ srcå®¹å™¨ç›¸åŒçš„å…ƒç´ 
 			alloc.construct(_first + i, src._first[i]);
 		}
 		_last = _first + len;
 		_end = _first + (src._end -src._first);
 		return *this;
 	}
-	//ÏòÈİÆ÷Î²²¿¼ÓÈëÔªËØ
+	//å‘å®¹å™¨å°¾éƒ¨åŠ å…¥å…ƒç´ 
 	void push_back(const T& val) {
 		if (full()) {
 			expand();
 		}
-		//¹¹ÔìÔªËØ ¼ÓÈëÈİÆ÷
+		//æ„é€ å…ƒç´  åŠ å…¥å®¹å™¨
 		alloc.construct(_last, val);
 		_last ++;
 	}
-	//É¾³ıÈİÆ÷Ä©Î²ÔªËØ
+	//åˆ é™¤å®¹å™¨æœ«å°¾å…ƒç´ 
 	void pop_back() {
 		if (!empty()) {
-			//alloc.destroy(--_last); //Ë³Ğò
+			//alloc.destroy(--_last); //é¡ºåº
 			--_last;
 			alloc.destroy(_last);
 		}
 		return;
 	}
-	//·µ»ØÈİÆ÷Ä©Î²ÔªËØ
+	//è¿”å›å®¹å™¨æœ«å°¾å…ƒç´ 
 	T back() {
 		T tmp(*(_last-1));
 		return tmp;
@@ -104,7 +104,7 @@ private:
 	T* _first;
 	T* _last;
 	T* _end;
-	ALLOC alloc; //¶¨ÒåÈİÆ÷µÄ¿Õ¼äÅäÖÃÆ÷¶ÔÏó
+	ALLOC alloc; //å®šä¹‰å®¹å™¨çš„ç©ºé—´é…ç½®å™¨å¯¹è±¡
 	void expand() {
 		int size = _end - _first;
 		int len = _last - _first;
@@ -128,7 +128,7 @@ public:
 	~Test() {
 		std::cout << "~Test()" << std::endl;
 	}
-	//¿½±´¹¹Ôì
+	//æ‹·è´æ„é€ 
 	Test(const Test&) {
 		std::cout << "Test(const Test&)" << std::endl;
 	}
@@ -146,7 +146,7 @@ int main() {
 	vec.pop_back();
 	vec.pop_back();
 	std::cout << "---------------------" << std::endl;
-	std::cout << "-------ÊäÈëÈÎÒâ¼ü½áÊømain()----------" << std::endl;
+	std::cout << "-------è¾“å…¥ä»»æ„é”®ç»“æŸmain()----------" << std::endl;
 	std::cin.get();
 	return 0;
 }
